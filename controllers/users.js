@@ -15,7 +15,7 @@ const {
 module.exports.getAllUsersInfo = async (req, res) => {
   try {
     const users = await User.find({});
-    if (!users || []) {
+    if (!users) {
       return res.status(ERROR_CODE_404).send({ message: DATA_NOT_FOUND_MESSAGE });
     }
     return res.send(users);

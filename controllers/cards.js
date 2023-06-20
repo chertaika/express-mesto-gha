@@ -6,7 +6,6 @@ const {
   ERROR_MESSAGE,
   ERROR_CODE_400,
   CARD_NOT_FOUND_MESSAGE,
-  SUCCESSFUL_DELETE,
   INCORRECT_ADD_CARD_DATA_MESSAGE,
   INCORRECT_LIKE_CARD_DATA_MESSAGE,
   INCORRECT_CARD_DATA_MESSAGE,
@@ -15,7 +14,7 @@ const {
 module.exports.getCards = async (req, res) => {
   try {
     const cards = await Card.find({});
-    if (!cards || []) {
+    if (!cards) {
       return res.status(ERROR_CODE_404).send({ message: DATA_NOT_FOUND_MESSAGE });
     }
     return res.send(cards);
@@ -46,7 +45,7 @@ module.exports.deleteCardById = async (req, res) => {
     if (!card) {
       return res.status(ERROR_CODE_404).send({ message: CARD_NOT_FOUND_MESSAGE });
     }
-    return res.send({ message: SUCCESSFUL_DELETE });
+    return res.send(card);
   } catch (error) {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
       return res.status(ERROR_CODE_400).send({ message: INCORRECT_CARD_DATA_MESSAGE });
@@ -67,7 +66,7 @@ module.exports.likeCard = async (req, res) => {
     if (!card) {
       return res.status(ERROR_CODE_404).send({ message: CARD_NOT_FOUND_MESSAGE });
     }
-    return res.send(card);
+    return res.send(card.likes);
   } catch (error) {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
       return res.status(ERROR_CODE_400).send({ message: INCORRECT_LIKE_CARD_DATA_MESSAGE });
@@ -88,7 +87,7 @@ module.exports.dislikeCard = async (req, res) => {
     if (!card) {
       return res.status(ERROR_CODE_404).send({ message: CARD_NOT_FOUND_MESSAGE });
     }
-    return res.send(card);
+    return res.send(card.likes);
   } catch (error) {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
       return res.status(ERROR_CODE_400).send({ message: INCORRECT_LIKE_CARD_DATA_MESSAGE });

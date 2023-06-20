@@ -1,3 +1,5 @@
+const SUCCESS_CODE_200 = 200;
+const SUCCESS_CODE_201 = 201;
 const ERROR_CODE_400 = 400;
 const ERROR_CODE_404 = 404;
 const ERROR_CODE_500 = 500;
@@ -15,6 +17,8 @@ const ERROR_MESSAGE = 'Произошла ошибка:';
 const SUCCESSFUL_DELETE = 'Пост удалён';
 
 module.exports = {
+  SUCCESS_CODE_200,
+  SUCCESS_CODE_201,
   ERROR_CODE_400,
   ERROR_CODE_500,
   ERROR_CODE_404,
