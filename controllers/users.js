@@ -30,7 +30,7 @@ module.exports.getUserInfoById = async (req, res) => {
     }
     return res.send(user);
   } catch (error) {
-    if (error.name === 'CastError') {
+    if (error.name === 'ValidationError' || error.name === 'CastError') {
       return res.status(ERROR_CODE_400).send({ message: INCORRECT_DATA_MESSAGE });
     }
     return res.status(ERROR_CODE_500).send({ message: `${ERROR_MESSAGE} ${error.name}` });
@@ -39,16 +39,8 @@ module.exports.getUserInfoById = async (req, res) => {
 
 module.exports.createUser = async (req, res) => {
   try {
-    const {
-      name,
-      about,
-      avatar,
-    } = req.body;
-    const user = await User.create({
-      name,
-      about,
-      avatar,
-    });
+    const { name, about, avatar } = req.body;
+    const user = await User.create({ name, about, avatar });
     return res.send(user);
   } catch (error) {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
@@ -66,6 +58,9 @@ module.exports.updateUserInfo = async (req, res) => {
       new: true,
       runValidators: true,
     });
+    if (!user) {
+      return res.status(ERROR_CODE_404).send({ message: USER_NOT_FOUND_MESSAGE });
+    }
     return res.send(user);
   } catch (error) {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
@@ -83,6 +78,9 @@ module.exports.updateUserAvatar = async (req, res) => {
       new: true,
       runValidators: true,
     });
+    if (!user) {
+      return res.status(ERROR_CODE_404).send({ message: USER_NOT_FOUND_MESSAGE });
+    }
     return res.send(user);
   } catch (error) {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
