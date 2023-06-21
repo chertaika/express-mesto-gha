@@ -13,7 +13,7 @@ const INCORRECT_LIKE_CARD_DATA_MESSAGE = 'Переданы некорректн�
 const USER_NOT_FOUND_MESSAGE = 'Пользователь с указанным _id не найден';
 const CARD_NOT_FOUND_MESSAGE = 'Карточка с указанным _id не найдена';
 const DATA_NOT_FOUND_MESSAGE = 'Данные не найдены';
-const ERROR_MESSAGE = 'Произошла ошибка:';
+const SERVER_ERROR_MESSAGE = 'На сервере произошла ошибка';
 const SUCCESSFUL_DELETE = 'Пост удалён';
 
 module.exports = {
@@ -32,6 +32,6 @@ module.exports = {
   USER_NOT_FOUND_MESSAGE,
   CARD_NOT_FOUND_MESSAGE,
   DATA_NOT_FOUND_MESSAGE,
-  ERROR_MESSAGE,
+  SERVER_ERROR_MESSAGE,
   SUCCESSFUL_DELETE,
 };

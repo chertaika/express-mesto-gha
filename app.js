@@ -2,12 +2,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { ERROR_CODE_404 } = require('./utils/constants');
-
-const { PORT = 3000 } = process.env;
+const { DB_ADDRESS, PORT } = require('./config');
 
 (async () => {
   try {
-    await mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
+    await mongoose.connect(DB_ADDRESS);
     console.log('Соединение с базой данных установлено');
   } catch (error) {
     console.log(`Ошибка соединения с базой данных ${error.message}`);

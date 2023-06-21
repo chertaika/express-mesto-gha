@@ -6,7 +6,7 @@ const {
   USER_NOT_FOUND_MESSAGE,
   INCORRECT_USER_DATA_MESSAGE,
   DATA_NOT_FOUND_MESSAGE,
-  ERROR_MESSAGE,
+  SERVER_ERROR_MESSAGE,
   INCORRECT_UPDATE_USER_DATA_MESSAGE,
   INCORRECT_UPDATE_AVATAR_DATA_MESSAGE,
   INCORRECT_ADD_USER_DATA_MESSAGE,
@@ -19,8 +19,8 @@ module.exports.getAllUsersInfo = async (req, res) => {
       return res.status(ERROR_CODE_404).send({ message: DATA_NOT_FOUND_MESSAGE });
     }
     return res.send(users);
-  } catch (error) {
-    return res.status(ERROR_CODE_500).send({ message: `${ERROR_MESSAGE} ${error.message}` });
+  } catch {
+    return res.status(ERROR_CODE_500).send({ message: SERVER_ERROR_MESSAGE });
   }
 };
 
@@ -36,7 +36,7 @@ module.exports.getUserInfoById = async (req, res) => {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
       return res.status(ERROR_CODE_400).send({ message: INCORRECT_USER_DATA_MESSAGE });
     }
-    return res.status(ERROR_CODE_500).send({ message: `${ERROR_MESSAGE} ${error.name}` });
+    return res.status(ERROR_CODE_500).send({ message: SERVER_ERROR_MESSAGE });
   }
 };
 
@@ -49,7 +49,7 @@ module.exports.createUser = async (req, res) => {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
       return res.status(ERROR_CODE_400).send({ message: INCORRECT_ADD_USER_DATA_MESSAGE });
     }
-    return res.status(ERROR_CODE_500).send({ message: `${ERROR_MESSAGE} ${error.message}` });
+    return res.status(ERROR_CODE_500).send({ message: SERVER_ERROR_MESSAGE });
   }
 };
 
@@ -69,7 +69,7 @@ module.exports.updateUserInfo = async (req, res) => {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
       return res.status(ERROR_CODE_400).send({ message: INCORRECT_UPDATE_USER_DATA_MESSAGE });
     }
-    return res.status(ERROR_CODE_500).send({ message: `${ERROR_MESSAGE} ${error.message}` });
+    return res.status(ERROR_CODE_500).send({ message: SERVER_ERROR_MESSAGE });
   }
 };
 
@@ -89,6 +89,6 @@ module.exports.updateUserAvatar = async (req, res) => {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
       return res.status(ERROR_CODE_400).send({ message: INCORRECT_UPDATE_AVATAR_DATA_MESSAGE });
     }
-    return res.status(ERROR_CODE_500).send({ message: `${ERROR_MESSAGE} ${error.message}` });
+    return res.status(ERROR_CODE_500).send({ message: SERVER_ERROR_MESSAGE });
   }
 };

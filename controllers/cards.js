@@ -3,7 +3,7 @@ const {
   ERROR_CODE_404,
   DATA_NOT_FOUND_MESSAGE,
   ERROR_CODE_500,
-  ERROR_MESSAGE,
+  SERVER_ERROR_MESSAGE,
   ERROR_CODE_400,
   CARD_NOT_FOUND_MESSAGE,
   INCORRECT_ADD_CARD_DATA_MESSAGE,
@@ -18,9 +18,9 @@ module.exports.getCards = async (req, res) => {
       return res.status(ERROR_CODE_404).send({ message: DATA_NOT_FOUND_MESSAGE });
     }
     return res.send(cards);
-  } catch (error) {
+  } catch {
     return res.status(ERROR_CODE_500)
-      .send({ message: `${ERROR_MESSAGE} ${error.message}` });
+      .send({ message: SERVER_ERROR_MESSAGE });
   }
 };
 
@@ -34,7 +34,7 @@ module.exports.createCard = async (req, res) => {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
       return res.status(ERROR_CODE_400).send({ message: INCORRECT_ADD_CARD_DATA_MESSAGE });
     }
-    return res.status(ERROR_CODE_500).send({ message: `${ERROR_MESSAGE} ${error.message}` });
+    return res.status(ERROR_CODE_500).send({ message: SERVER_ERROR_MESSAGE });
   }
 };
 
@@ -50,7 +50,7 @@ module.exports.deleteCardById = async (req, res) => {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
       return res.status(ERROR_CODE_400).send({ message: INCORRECT_CARD_DATA_MESSAGE });
     }
-    return res.status(ERROR_CODE_500).send({ message: `${ERROR_MESSAGE} ${error.message}` });
+    return res.status(ERROR_CODE_500).send({ message: SERVER_ERROR_MESSAGE });
   }
 };
 
@@ -71,7 +71,7 @@ module.exports.likeCard = async (req, res) => {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
       return res.status(ERROR_CODE_400).send({ message: INCORRECT_LIKE_CARD_DATA_MESSAGE });
     }
-    return res.status(ERROR_CODE_500).send({ message: `${ERROR_MESSAGE} ${error.message}` });
+    return res.status(ERROR_CODE_500).send({ message: SERVER_ERROR_MESSAGE });
   }
 };
 
@@ -92,6 +92,6 @@ module.exports.dislikeCard = async (req, res) => {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
       return res.status(ERROR_CODE_400).send({ message: INCORRECT_LIKE_CARD_DATA_MESSAGE });
     }
-    return res.status(ERROR_CODE_500).send({ message: `${ERROR_MESSAGE} ${error.message}` });
+    return res.status(ERROR_CODE_500).send({ message: SERVER_ERROR_MESSAGE });
   }
 };
