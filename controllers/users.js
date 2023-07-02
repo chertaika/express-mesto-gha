@@ -13,9 +13,7 @@ const {
 const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
 const ConflictingRequestError = require('../errors/ConflictingRequestError');
-const { NODE_ENV,
-  JWT_SECRET
-} = require('../config');
+const { NODE_ENV, JWT_SECRET } = require('../config');
 
 const checkData = (data) => {
   if (!data) throw new NotFoundError(USER_NOT_FOUND_MESSAGE);
@@ -33,6 +31,21 @@ module.exports.getAllUsersInfo = async (req, res, next) => {
 module.exports.getUserInfoById = async (req, res, next) => {
   try {
     const { userId } = req.params;
+    const user = await User.findById(userId);
+    checkData(user);
+    return res.send(user);
+  } catch (error) {
+    if (error.name === 'ValidationError' || error.name === 'CastError') {
+      return next(new BadRequestError(INCORRECT_USER_DATA_MESSAGE));
+    }
+    return next(error);
+  }
+};
+
+module.exports.getCurrentUser = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    console.log(userId);
     const user = await User.findById(userId);
     checkData(user);
     return res.send(user);

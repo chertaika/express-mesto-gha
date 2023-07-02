@@ -22,13 +22,6 @@ app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '6491408a29889fdaa56ca250',
-  };
-  next();
-});
-
 app.use(router);
 
 app.use(errors());
