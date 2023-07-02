@@ -34,6 +34,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 8,
+    select: false,
   },
 });
 
@@ -42,7 +43,7 @@ const checkData = (data) => {
 };
 
 userSchema.statics.findUserByCredentials = async function checkUserData(email, password) {
-  const user = await this.findOne({ email });
+  const user = await this.findOne({ email }).select('+password');
   checkData(user);
 
   const matched = await bcrypt.compare(password, user.password);

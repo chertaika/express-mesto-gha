@@ -1,6 +1,7 @@
 const SUCCESS_CODE_200 = 200;
 const SUCCESS_CODE_201 = 201;
 const ERROR_CODE_400 = 400;
+const ERROR_CODE_403 = 403;
 const ERROR_CODE_404 = 404;
 const ERROR_CODE_409 = 409;
 const ERROR_CODE_401 = 401;
@@ -20,6 +21,7 @@ const EMPTY_LINK_ERROR_MESSAGE = 'Поле "Ссылка на картинку" 
 const NOT_UNIQUE_EMAIL_ERROR_MESSAGE = 'Пользователь с таким email уже зарегистрирован';
 const INVALID_AUTH_DATA_ERROR_MESSAGE = 'Неправильные почта или пароль';
 const UNAUTHORIZED_ERROR_MESSAGE = 'Необходима авторизация';
+const NO_RIGHTS_TO_DELETE_ERROR_MESSAGE = 'Нет прав на удаление этой карточки';
 const SERVER_ERROR_MESSAGE = 'На сервере произошла ошибка';
 const SUCCESSFUL_DELETE = 'Пост удалён';
 
@@ -27,6 +29,7 @@ module.exports = {
   SUCCESS_CODE_200,
   SUCCESS_CODE_201,
   ERROR_CODE_400,
+  ERROR_CODE_403,
   ERROR_CODE_500,
   ERROR_CODE_404,
   ERROR_CODE_409,
@@ -48,4 +51,5 @@ module.exports = {
   NOT_UNIQUE_EMAIL_ERROR_MESSAGE,
   INVALID_AUTH_DATA_ERROR_MESSAGE,
   UNAUTHORIZED_ERROR_MESSAGE,
+  NO_RIGHTS_TO_DELETE_ERROR_MESSAGE,
 };
