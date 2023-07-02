@@ -13,6 +13,9 @@ const {
 const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
 const ConflictingRequestError = require('../errors/ConflictingRequestError');
+const { NODE_ENV,
+  JWT_SECRET
+} = require('../config');
 
 const checkData = (data) => {
   if (!data) throw new NotFoundError(USER_NOT_FOUND_MESSAGE);
@@ -110,7 +113,11 @@ module.exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const { _id } = await User.findUserByCredentials(email, password);
-    const token = jwt.sign({ _id }, 'super-strong-secret', { expiresIn: '7d' });
+    const token = jwt.sign(
+      { _id },
+      NODE_ENV === 'production' ? JWT_SECRET : 'super-puper-duper-dev-secret',
+      { expiresIn: '7d' },
+    );
     return res.cookie('jwt', token, {
       maxAge: 3600000 * 24 * 7,
       httpOnly: true,

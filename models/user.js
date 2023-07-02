@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const isEmail = require('validator/lib/isEmail');
-const { UNAUTHORIZED_ERROR_MESSAGE } = require('../utils/constants');
+const { INVALID_AUTH_DATA_ERROR_MESSAGE } = require('../utils/constants');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 
 const userSchema = new mongoose.Schema({
@@ -38,10 +38,10 @@ const userSchema = new mongoose.Schema({
 });
 
 const checkData = (data) => {
-  if (!data) throw new UnauthorizedError(UNAUTHORIZED_ERROR_MESSAGE);
+  if (!data) throw new UnauthorizedError(INVALID_AUTH_DATA_ERROR_MESSAGE);
 };
 
-userSchema.statics.findUserByCredentials = async function (email, password) {
+userSchema.statics.findUserByCredentials = async function checkUserData(email, password) {
   const user = await this.findOne({ email });
   checkData(user);
 

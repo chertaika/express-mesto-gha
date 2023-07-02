@@ -18,7 +18,8 @@ const DATA_NOT_FOUND_MESSAGE = 'Данные не найдены';
 const EMPTY_NAME_ERROR_MESSAGE = 'Поле "Название" не может быть пустым';
 const EMPTY_LINK_ERROR_MESSAGE = 'Поле "Ссылка на картинку" не может быть пустым';
 const NOT_UNIQUE_EMAIL_ERROR_MESSAGE = 'Пользователь с таким email уже зарегистрирован';
-const UNAUTHORIZED_ERROR_MESSAGE = 'Неправильные почта или пароль';
+const INVALID_AUTH_DATA_ERROR_MESSAGE = 'Неправильные почта или пароль';
+const UNAUTHORIZED_ERROR_MESSAGE = 'Необходима авторизация';
 const SERVER_ERROR_MESSAGE = 'На сервере произошла ошибка';
 const SUCCESSFUL_DELETE = 'Пост удалён';
 
@@ -45,5 +46,6 @@ module.exports = {
   SERVER_ERROR_MESSAGE,
   SUCCESSFUL_DELETE,
   NOT_UNIQUE_EMAIL_ERROR_MESSAGE,
+  INVALID_AUTH_DATA_ERROR_MESSAGE,
   UNAUTHORIZED_ERROR_MESSAGE,
 };
