@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const { DB_URI, PORT } = require('./config');
 const errorHandler = require('./middlewares/errorHandler');
-const NotFoundError = require('./errors/NotFoundError');
+const router = require('./routes');
 
 (async () => {
   try {
@@ -19,8 +19,8 @@ const NotFoundError = require('./errors/NotFoundError');
 const app = express();
 app.use(helmet());
 
-app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.use((req, res, next) => {
   req.user = {
@@ -29,10 +29,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/users', require('./routes/users'));
-app.use('/cards', require('./routes/cards'));
-
-app.use((req, res, next) => next(new NotFoundError('Неверный URL запроса')));
+app.use(router);
 
 app.use(errors());
 

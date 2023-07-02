@@ -2,6 +2,8 @@ const SUCCESS_CODE_200 = 200;
 const SUCCESS_CODE_201 = 201;
 const ERROR_CODE_400 = 400;
 const ERROR_CODE_404 = 404;
+const ERROR_CODE_409 = 409;
+const ERROR_CODE_401 = 401;
 const ERROR_CODE_500 = 500;
 const INCORRECT_USER_DATA_MESSAGE = 'Переданы некорректные данные пользователя';
 const INCORRECT_ADD_USER_DATA_MESSAGE = 'Переданы некорректные данные при создании пользователя';
@@ -15,6 +17,8 @@ const CARD_NOT_FOUND_MESSAGE = 'Карточка с указанным _id не 
 const DATA_NOT_FOUND_MESSAGE = 'Данные не найдены';
 const EMPTY_NAME_ERROR_MESSAGE = 'Поле "Название" не может быть пустым';
 const EMPTY_LINK_ERROR_MESSAGE = 'Поле "Ссылка на картинку" не может быть пустым';
+const NOT_UNIQUE_EMAIL_ERROR_MESSAGE = 'Пользователь с таким email уже зарегистрирован';
+const UNAUTHORIZED_ERROR_MESSAGE = 'Неправильные почта или пароль';
 const SERVER_ERROR_MESSAGE = 'На сервере произошла ошибка';
 const SUCCESSFUL_DELETE = 'Пост удалён';
 
@@ -24,6 +28,8 @@ module.exports = {
   ERROR_CODE_400,
   ERROR_CODE_500,
   ERROR_CODE_404,
+  ERROR_CODE_409,
+  ERROR_CODE_401,
   INCORRECT_USER_DATA_MESSAGE,
   INCORRECT_ADD_USER_DATA_MESSAGE,
   INCORRECT_UPDATE_USER_DATA_MESSAGE,
@@ -38,4 +44,6 @@ module.exports = {
   EMPTY_LINK_ERROR_MESSAGE,
   SERVER_ERROR_MESSAGE,
   SUCCESSFUL_DELETE,
+  NOT_UNIQUE_EMAIL_ERROR_MESSAGE,
+  UNAUTHORIZED_ERROR_MESSAGE,
 };
