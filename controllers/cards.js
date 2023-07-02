@@ -1,30 +1,27 @@
 const Card = require('../models/card');
 const {
-  ERROR_CODE_404,
-  DATA_NOT_FOUND_MESSAGE,
-  ERROR_CODE_500,
-  SERVER_ERROR_MESSAGE,
-  ERROR_CODE_400,
   CARD_NOT_FOUND_MESSAGE,
   INCORRECT_ADD_CARD_DATA_MESSAGE,
   INCORRECT_LIKE_CARD_DATA_MESSAGE,
   INCORRECT_CARD_DATA_MESSAGE,
 } = require('../utils/constants');
+const BadRequestError = require('../errors/BadRequestError');
+const NotFoundError = require('../errors/NotFoundError');
 
-module.exports.getCards = async (req, res) => {
+const checkData = (data) => {
+  if (!data) throw new NotFoundError(CARD_NOT_FOUND_MESSAGE);
+};
+
+module.exports.getCards = async (req, res, next) => {
   try {
     const cards = await Card.find({});
-    if (!cards) {
-      return res.status(ERROR_CODE_404).send({ message: DATA_NOT_FOUND_MESSAGE });
-    }
     return res.send(cards);
-  } catch {
-    return res.status(ERROR_CODE_500)
-      .send({ message: SERVER_ERROR_MESSAGE });
+  } catch (error) {
+    return next(error);
   }
 };
 
-module.exports.createCard = async (req, res) => {
+module.exports.createCard = async (req, res, next) => {
   try {
     const owner = req.user._id;
     const { name, link } = req.body;
@@ -32,29 +29,27 @@ module.exports.createCard = async (req, res) => {
     return res.send(card);
   } catch (error) {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
-      return res.status(ERROR_CODE_400).send({ message: INCORRECT_ADD_CARD_DATA_MESSAGE });
+      return next(new BadRequestError(INCORRECT_ADD_CARD_DATA_MESSAGE));
     }
-    return res.status(ERROR_CODE_500).send({ message: SERVER_ERROR_MESSAGE });
+    return next(error);
   }
 };
 
-module.exports.deleteCardById = async (req, res) => {
+module.exports.deleteCardById = async (req, res, next) => {
   try {
     const { cardId } = req.params;
     const card = await Card.findByIdAndRemove(cardId);
-    if (!card) {
-      return res.status(ERROR_CODE_404).send({ message: CARD_NOT_FOUND_MESSAGE });
-    }
+    checkData(card);
     return res.send(card);
   } catch (error) {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
-      return res.status(ERROR_CODE_400).send({ message: INCORRECT_CARD_DATA_MESSAGE });
+      return next(new BadRequestError(INCORRECT_CARD_DATA_MESSAGE));
     }
-    return res.status(ERROR_CODE_500).send({ message: SERVER_ERROR_MESSAGE });
+    return next(error);
   }
 };
 
-module.exports.likeCard = async (req, res) => {
+module.exports.likeCard = async (req, res, next) => {
   try {
     const { cardId } = req.params;
     const { _id } = req.user;
@@ -63,19 +58,17 @@ module.exports.likeCard = async (req, res) => {
       { $addToSet: { likes: _id } },
       { new: true },
     ).populate('likes');
-    if (!card) {
-      return res.status(ERROR_CODE_404).send({ message: CARD_NOT_FOUND_MESSAGE });
-    }
+    checkData(card);
     return res.send(card.likes);
   } catch (error) {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
-      return res.status(ERROR_CODE_400).send({ message: INCORRECT_LIKE_CARD_DATA_MESSAGE });
+      return next(new BadRequestError(INCORRECT_LIKE_CARD_DATA_MESSAGE));
     }
-    return res.status(ERROR_CODE_500).send({ message: SERVER_ERROR_MESSAGE });
+    return next(error);
   }
 };
 
-module.exports.dislikeCard = async (req, res) => {
+module.exports.dislikeCard = async (req, res, next) => {
   try {
     const { cardId } = req.params;
     const { _id } = req.user;
@@ -84,14 +77,12 @@ module.exports.dislikeCard = async (req, res) => {
       { $pull: { likes: _id } },
       { new: true },
     );
-    if (!card) {
-      return res.status(ERROR_CODE_404).send({ message: CARD_NOT_FOUND_MESSAGE });
-    }
+    checkData(card);
     return res.send(card.likes);
   } catch (error) {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
-      return res.status(ERROR_CODE_400).send({ message: INCORRECT_LIKE_CARD_DATA_MESSAGE });
+      return next(new BadRequestError(INCORRECT_LIKE_CARD_DATA_MESSAGE));
     }
-    return res.status(ERROR_CODE_500).send({ message: SERVER_ERROR_MESSAGE });
+    return next(error);
   }
 };

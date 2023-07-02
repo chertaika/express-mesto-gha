@@ -1,8 +1,11 @@
 const express = require('express');
+const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { ERROR_CODE_404 } = require('./utils/constants');
+const { errors } = require('celebrate');
 const { DB_URI, PORT } = require('./config');
+const errorHandler = require('./middlewares/errorHandler');
+const NotFoundError = require('./errors/NotFoundError');
 
 (async () => {
   try {
@@ -14,6 +17,8 @@ const { DB_URI, PORT } = require('./config');
 })();
 
 const app = express();
+app.use(helmet());
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -27,10 +32,11 @@ app.use((req, res, next) => {
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
-app.use((req, res, next) => {
-  res.status(ERROR_CODE_404).send({ message: 'Неверный URL запроса' });
-  next();
-});
+app.use((req, res, next) => next(new NotFoundError('Неверный URL запроса')));
+
+app.use(errors());
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Приложение слушает порт ${PORT}`);

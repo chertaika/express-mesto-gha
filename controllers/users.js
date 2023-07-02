@@ -1,59 +1,55 @@
 const User = require('../models/user');
 const {
-  ERROR_CODE_500,
-  ERROR_CODE_404,
-  ERROR_CODE_400,
   USER_NOT_FOUND_MESSAGE,
   INCORRECT_USER_DATA_MESSAGE,
-  DATA_NOT_FOUND_MESSAGE,
-  SERVER_ERROR_MESSAGE,
   INCORRECT_UPDATE_USER_DATA_MESSAGE,
   INCORRECT_UPDATE_AVATAR_DATA_MESSAGE,
   INCORRECT_ADD_USER_DATA_MESSAGE,
 } = require('../utils/constants');
+const NotFoundError = require('../errors/NotFoundError');
+const BadRequestError = require('../errors/BadRequestError');
 
-module.exports.getAllUsersInfo = async (req, res) => {
+const checkData = (data) => {
+  if (!data) throw new NotFoundError(USER_NOT_FOUND_MESSAGE);
+};
+
+module.exports.getAllUsersInfo = async (req, res, next) => {
   try {
     const users = await User.find({});
-    if (!users) {
-      return res.status(ERROR_CODE_404).send({ message: DATA_NOT_FOUND_MESSAGE });
-    }
     return res.send(users);
-  } catch {
-    return res.status(ERROR_CODE_500).send({ message: SERVER_ERROR_MESSAGE });
+  } catch (error) {
+    return next(error);
   }
 };
 
-module.exports.getUserInfoById = async (req, res) => {
+module.exports.getUserInfoById = async (req, res, next) => {
   try {
     const { userId } = req.params;
     const user = await User.findById(userId);
-    if (!user) {
-      return res.status(ERROR_CODE_404).send({ message: USER_NOT_FOUND_MESSAGE });
-    }
+    checkData(user);
     return res.send(user);
   } catch (error) {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
-      return res.status(ERROR_CODE_400).send({ message: INCORRECT_USER_DATA_MESSAGE });
+      return next(new BadRequestError(INCORRECT_USER_DATA_MESSAGE));
     }
-    return res.status(ERROR_CODE_500).send({ message: SERVER_ERROR_MESSAGE });
+    return next(error);
   }
 };
 
-module.exports.createUser = async (req, res) => {
+module.exports.createUser = async (req, res, next) => {
   try {
     const { name, about, avatar } = req.body;
     const user = await User.create({ name, about, avatar });
     return res.send(user);
   } catch (error) {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
-      return res.status(ERROR_CODE_400).send({ message: INCORRECT_ADD_USER_DATA_MESSAGE });
+      return next(new BadRequestError(INCORRECT_ADD_USER_DATA_MESSAGE));
     }
-    return res.status(ERROR_CODE_500).send({ message: SERVER_ERROR_MESSAGE });
+    return next(error);
   }
 };
 
-module.exports.updateUserInfo = async (req, res) => {
+module.exports.updateUserInfo = async (req, res, next) => {
   try {
     const { _id } = req.user;
     const { name, about } = req.body;
@@ -61,19 +57,17 @@ module.exports.updateUserInfo = async (req, res) => {
       new: true,
       runValidators: true,
     });
-    if (!user) {
-      return res.status(ERROR_CODE_404).send({ message: USER_NOT_FOUND_MESSAGE });
-    }
+    checkData(user);
     return res.send(user);
   } catch (error) {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
-      return res.status(ERROR_CODE_400).send({ message: INCORRECT_UPDATE_USER_DATA_MESSAGE });
+      return next(new BadRequestError(INCORRECT_UPDATE_USER_DATA_MESSAGE));
     }
-    return res.status(ERROR_CODE_500).send({ message: SERVER_ERROR_MESSAGE });
+    return next(error);
   }
 };
 
-module.exports.updateUserAvatar = async (req, res) => {
+module.exports.updateUserAvatar = async (req, res, next) => {
   try {
     const { _id } = req.user;
     const { avatar } = req.body;
@@ -81,14 +75,12 @@ module.exports.updateUserAvatar = async (req, res) => {
       new: true,
       runValidators: true,
     });
-    if (!user) {
-      return res.status(ERROR_CODE_404).send({ message: USER_NOT_FOUND_MESSAGE });
-    }
+    checkData(user);
     return res.send(user);
   } catch (error) {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
-      return res.status(ERROR_CODE_400).send({ message: INCORRECT_UPDATE_AVATAR_DATA_MESSAGE });
+      return next(new BadRequestError(INCORRECT_UPDATE_AVATAR_DATA_MESSAGE));
     }
-    return res.status(ERROR_CODE_500).send({ message: SERVER_ERROR_MESSAGE });
+    return next(error);
   }
 };
