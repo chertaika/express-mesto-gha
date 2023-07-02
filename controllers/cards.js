@@ -1,3 +1,4 @@
+const { Error: { ValidationError, CastError } } = require('mongoose');
 const Card = require('../models/card');
 const {
   CARD_NOT_FOUND_MESSAGE,
@@ -30,7 +31,7 @@ module.exports.createCard = async (req, res, next) => {
     const card = await Card.create({ name, link, owner });
     return res.send(card);
   } catch (error) {
-    if (error.name === 'ValidationError' || error.name === 'CastError') {
+    if (error instanceof ValidationError) {
       return next(new BadRequestError(INCORRECT_ADD_CARD_DATA_MESSAGE));
     }
     return next(error);
@@ -45,12 +46,14 @@ module.exports.deleteCardById = async (req, res, next) => {
 
     const ownerId = card.owner.valueOf();
     const userId = req.user._id;
-    if (ownerId !== userId) next(new ForbiddenError(NO_RIGHTS_TO_DELETE_ERROR_MESSAGE));
+    if (ownerId !== userId) {
+      return next(new ForbiddenError(NO_RIGHTS_TO_DELETE_ERROR_MESSAGE));
+    }
 
-    await Card.findByIdAndRemove(cardId);
+    await card.deleteOne();
     return res.send(card);
   } catch (error) {
-    if (error.name === 'ValidationError' || error.name === 'CastError') {
+    if (error instanceof CastError) {
       return next(new BadRequestError(INCORRECT_CARD_DATA_MESSAGE));
     }
     return next(error);
@@ -69,7 +72,7 @@ module.exports.likeCard = async (req, res, next) => {
     checkData(card);
     return res.send(card.likes);
   } catch (error) {
-    if (error.name === 'ValidationError' || error.name === 'CastError') {
+    if (error instanceof CastError) {
       return next(new BadRequestError(INCORRECT_LIKE_CARD_DATA_MESSAGE));
     }
     return next(error);
@@ -88,7 +91,7 @@ module.exports.dislikeCard = async (req, res, next) => {
     checkData(card);
     return res.send(card.likes);
   } catch (error) {
-    if (error.name === 'ValidationError' || error.name === 'CastError') {
+    if (error instanceof CastError) {
       return next(new BadRequestError(INCORRECT_LIKE_CARD_DATA_MESSAGE));
     }
     return next(error);

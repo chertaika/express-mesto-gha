@@ -2,7 +2,6 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const { DB_URI, PORT } = require('./config');
 const errorHandler = require('./middlewares/errorHandler');
@@ -20,8 +19,8 @@ const router = require('./routes');
 const app = express();
 app.use(helmet());
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.use(cookieParser());
 

@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { Error: { ValidationError, CastError } } = require('mongoose');
 const User = require('../models/user');
 
 const {
@@ -35,7 +36,7 @@ module.exports.getUserInfoById = async (req, res, next) => {
     checkData(user);
     return res.send(user);
   } catch (error) {
-    if (error.name === 'ValidationError' || error.name === 'CastError') {
+    if (error instanceof CastError) {
       return next(new BadRequestError(INCORRECT_USER_DATA_MESSAGE));
     }
     return next(error);
@@ -45,14 +46,10 @@ module.exports.getUserInfoById = async (req, res, next) => {
 module.exports.getCurrentUser = async (req, res, next) => {
   try {
     const userId = req.user._id;
-    console.log(userId);
     const user = await User.findById(userId);
     checkData(user);
     return res.send(user);
   } catch (error) {
-    if (error.name === 'ValidationError' || error.name === 'CastError') {
-      return next(new BadRequestError(INCORRECT_USER_DATA_MESSAGE));
-    }
     return next(error);
   }
 };
@@ -81,7 +78,7 @@ module.exports.createUser = async (req, res, next) => {
     if (error.code === 11000) {
       return next(new ConflictingRequestError(NOT_UNIQUE_EMAIL_ERROR_MESSAGE));
     }
-    if (error.name === 'ValidationError' || error.name === 'CastError') {
+    if (error instanceof ValidationError) {
       return next(new BadRequestError(INCORRECT_ADD_USER_DATA_MESSAGE));
     }
     return next(error);
@@ -99,7 +96,7 @@ module.exports.updateUserInfo = async (req, res, next) => {
     checkData(user);
     return res.send(user);
   } catch (error) {
-    if (error.name === 'ValidationError' || error.name === 'CastError') {
+    if (error instanceof ValidationError) {
       return next(new BadRequestError(INCORRECT_UPDATE_USER_DATA_MESSAGE));
     }
     return next(error);
@@ -117,7 +114,7 @@ module.exports.updateUserAvatar = async (req, res, next) => {
     checkData(user);
     return res.send(user);
   } catch (error) {
-    if (error.name === 'ValidationError' || error.name === 'CastError') {
+    if (error instanceof ValidationError) {
       return next(new BadRequestError(INCORRECT_UPDATE_AVATAR_DATA_MESSAGE));
     }
     return next(error);
@@ -138,7 +135,7 @@ module.exports.login = async (req, res, next) => {
       httpOnly: true,
       sameSite: true,
     })
-      .send({ token });
+      .end();
   } catch (error) {
     return next(error);
   }
