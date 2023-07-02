@@ -9,13 +9,12 @@ const handleAuthError = () => {
 
 module.exports.auth = (req, res, next) => {
   try {
-    const { authorization } = req.headers;
-    if (!authorization || !authorization.startsWith('Bearer ')) {
+    const token = req.cookies.jwt;
+    if (!token) {
       handleAuthError();
     }
-    const token = authorization.replace('Bearer ', '');
-    let payload;
 
+    let payload;
     try {
       payload = jwt.verify(
         token,

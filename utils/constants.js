@@ -1,3 +1,4 @@
+const URL_REGEX = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]+\.[a-zA-Z0-9()]+\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)/;
 const SUCCESS_CODE_200 = 200;
 const SUCCESS_CODE_201 = 201;
 const ERROR_CODE_400 = 400;
@@ -26,6 +27,7 @@ const SERVER_ERROR_MESSAGE = 'На сервере произошла ошибк�
 const SUCCESSFUL_DELETE = 'Пост удалён';
 
 module.exports = {
+  URL_REGEX,
   SUCCESS_CODE_200,
   SUCCESS_CODE_201,
   ERROR_CODE_400,

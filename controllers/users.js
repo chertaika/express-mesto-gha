@@ -67,13 +67,15 @@ module.exports.createUser = async (req, res, next) => {
       password,
     } = req.body;
     const hash = await bcrypt.hash(password, 10);
-    const user = await User.create({
+    let user = await User.create({
       name,
       about,
       avatar,
       email,
       password: hash,
     });
+    user = user.toObject();
+    delete user.password;
     return res.send(user);
   } catch (error) {
     if (error.code === 11000) {
