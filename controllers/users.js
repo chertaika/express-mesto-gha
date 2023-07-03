@@ -125,9 +125,9 @@ module.exports.updateUserAvatar = async (req, res, next) => {
 module.exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const { _id } = await User.findUserByCredentials(email, password);
+    const { _id: userId } = await User.findUserByCredentials(email, password);
     const token = jwt.sign(
-      { _id },
+      { userId },
       NODE_ENV === 'production' ? JWT_SECRET : 'super-puper-duper-dev-secret',
       { expiresIn: '7d' },
     );
@@ -136,7 +136,7 @@ module.exports.login = async (req, res, next) => {
       httpOnly: true,
       sameSite: true,
     })
-      .end();
+      .send({ _id: userId });
   } catch (error) {
     return next(error);
   }
