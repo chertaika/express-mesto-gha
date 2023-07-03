@@ -60,6 +60,13 @@ module.exports.deleteCardById = async (req, res, next) => {
   }
 };
 
+const handleLikeError = (next, error) => {
+  if (error instanceof CastError) {
+    return next(new BadRequestError(INCORRECT_LIKE_CARD_DATA_MESSAGE));
+  }
+  return next(error);
+};
+
 module.exports.likeCard = async (req, res, next) => {
   try {
     const { cardId } = req.params;
@@ -72,10 +79,7 @@ module.exports.likeCard = async (req, res, next) => {
     checkData(card);
     return res.send(card.likes);
   } catch (error) {
-    if (error instanceof CastError) {
-      return next(new BadRequestError(INCORRECT_LIKE_CARD_DATA_MESSAGE));
-    }
-    return next(error);
+    return handleLikeError(next, error);
   }
 };
 
@@ -91,9 +95,6 @@ module.exports.dislikeCard = async (req, res, next) => {
     checkData(card);
     return res.send(card.likes);
   } catch (error) {
-    if (error instanceof CastError) {
-      return next(new BadRequestError(INCORRECT_LIKE_CARD_DATA_MESSAGE));
-    }
-    return next(error);
+    return handleLikeError(next, error);
   }
 };

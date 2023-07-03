@@ -7,9 +7,9 @@ const {
   USER_NOT_FOUND_MESSAGE,
   INCORRECT_USER_DATA_MESSAGE,
   INCORRECT_UPDATE_USER_DATA_MESSAGE,
-  INCORRECT_UPDATE_AVATAR_DATA_MESSAGE,
   INCORRECT_ADD_USER_DATA_MESSAGE,
   NOT_UNIQUE_EMAIL_ERROR_MESSAGE,
+  INCORRECT_UPDATE_AVATAR_DATA_MESSAGE,
 } = require('../utils/constants');
 const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
@@ -29,29 +29,31 @@ module.exports.getAllUsersInfo = async (req, res, next) => {
   }
 };
 
-module.exports.getUserInfoById = async (req, res, next) => {
+const handleGetUserError = (next, error) => {
+  if (error instanceof CastError) {
+    return next(new BadRequestError(INCORRECT_USER_DATA_MESSAGE));
+  }
+  return next(error);
+};
+
+const findUserById = async (res, next, userId) => {
   try {
-    const { userId } = req.params;
     const user = await User.findById(userId);
     checkData(user);
     return res.send(user);
   } catch (error) {
-    if (error instanceof CastError) {
-      return next(new BadRequestError(INCORRECT_USER_DATA_MESSAGE));
-    }
-    return next(error);
+    return handleGetUserError(next, error);
   }
 };
 
+module.exports.getUserInfoById = async (req, res, next) => {
+  const { userId } = req.params;
+  await findUserById(res, next, userId);
+};
+
 module.exports.getCurrentUser = async (req, res, next) => {
-  try {
-    const userId = req.user._id;
-    const user = await User.findById(userId);
-    checkData(user);
-    return res.send(user);
-  } catch (error) {
-    return next(error);
-  }
+  const userId = req.user._id;
+  await findUserById(res, next, userId);
 };
 
 module.exports.createUser = async (req, res, next) => {
@@ -85,40 +87,39 @@ module.exports.createUser = async (req, res, next) => {
   }
 };
 
-module.exports.updateUserInfo = async (req, res, next) => {
+const handleUpdateUserError = (next, error, avatar) => {
+  if (error instanceof ValidationError) {
+    return next(new BadRequestError(
+      !avatar
+        ? INCORRECT_UPDATE_USER_DATA_MESSAGE
+        : INCORRECT_UPDATE_AVATAR_DATA_MESSAGE,
+    ));
+  }
+  return next(error);
+};
+
+const updateUserData = async (req, res, next, data) => {
   try {
     const { _id } = req.user;
-    const { name, about } = req.body;
-    const user = await User.findByIdAndUpdate(_id, { name, about }, {
+    const user = await User.findByIdAndUpdate(_id, data, {
       new: true,
       runValidators: true,
     });
     checkData(user);
     return res.send(user);
   } catch (error) {
-    if (error instanceof ValidationError) {
-      return next(new BadRequestError(INCORRECT_UPDATE_USER_DATA_MESSAGE));
-    }
-    return next(error);
+    return handleUpdateUserError(next, error, data.avatar);
   }
 };
 
+module.exports.updateUserInfo = async (req, res, next) => {
+  const { name, about } = req.body;
+  await updateUserData(req, res, next, { name, about });
+};
+
 module.exports.updateUserAvatar = async (req, res, next) => {
-  try {
-    const { _id } = req.user;
-    const { avatar } = req.body;
-    const user = await User.findByIdAndUpdate(_id, { avatar }, {
-      new: true,
-      runValidators: true,
-    });
-    checkData(user);
-    return res.send(user);
-  } catch (error) {
-    if (error instanceof ValidationError) {
-      return next(new BadRequestError(INCORRECT_UPDATE_AVATAR_DATA_MESSAGE));
-    }
-    return next(error);
-  }
+  const { avatar } = req.body;
+  await updateUserData(req, res, next, { avatar });
 };
 
 module.exports.login = async (req, res, next) => {
