@@ -127,7 +127,7 @@ module.exports.login = async (req, res, next) => {
     const { email, password } = req.body;
     const { _id: userId } = await User.findUserByCredentials(email, password);
     const token = jwt.sign(
-      { userId },
+      { _id: userId },
       NODE_ENV === 'production' ? JWT_SECRET : 'super-puper-duper-dev-secret',
       { expiresIn: '7d' },
     );
